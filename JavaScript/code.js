@@ -1,32 +1,122 @@
-var pos = new Position()
-var search = new Search(pos, 16)
-pos.fromFen('4k4/4a4/4P4/9/9/9/9/4B4/9/4K4 w')
-var move = search.searchMain(64, 2000)
-var moveText = move2Iccs(move)
-console.log(moveText)
-pos.fromFen('9/9/4Nk3/3c2p2/3r2P2/3p2B2/3p2r2/4KC3/9/9 w')
-move = search.searchMain(64, 2000)
-moveText = move2Iccs(move)
-console.log(moveText)
-console.log(fen)
+//=============================
 
-var fen = ''
-for (var i = 0; i < 9; i++) {
-  var line = ''
-  var space = 0
-  for (var j = 0; i < 10; j++) {
-    if (array[j][i] < 0) {
-      space++
-    } else {
-      if (space > 0) {
-        line += space.toString()
+JACOB_FEN_MAP = [
+  "K",
+  "A",
+  "A",
+  "B",
+  "B",
+  "R",
+  "R",
+  "C",
+  "C",
+  "N",
+  "N",
+  "P",
+  "P",
+  "P",
+  "P",
+  "P",
+  "k",
+  "a",
+  "a",
+  "b",
+  "b",
+  "r",
+  "r",
+  "c",
+  "c",
+  "n",
+  "n",
+  "p",
+  "p",
+  "p",
+  "p",
+  "p",
+];
+
+function jacob_boardToFen() {
+  if (!JACOB_BOARD) {
+    return "";
+  }
+
+  let map = JACOB_FEN_MAP
+  let fen = "";
+
+  for (let i = 9; i >= 0; i--) {
+    let line = "";
+    let space = 0;
+    for (let j = 0; j < 9; j++) {
+      let index = JACOB_BOARD[j][i];
+      if (index < 0 || index > 31) {
+        space++;
+      } else {
+        if (space > 0) {
+          line += space.toString();
+        }
+        line += map[index];
+        space = 0;
       }
-      line += 'QuanCo'
-      space = 0
     }
+    if (space > 0) {
+      line += space.toString();
+    }
+    fen += line + "/";
   }
-  if (space > 0) {
-    line += space.toString()
+
+  if (fen.endsWith("/")) {
+    fen = fen.substring(0, fen.length - 1);
   }
-  fen += line + '/'
+
+  return fen;
 }
+
+$(document).ready(function () {
+  let jacob_control = $(".container-fluid:first");
+  let jacob_newHtml = `
+  <div style="height:100px">
+    <div style="float:left">      
+      <span id="jacob_hint" style="cursor:pointer;font-weight: bold; font-size: 24px">Hint</span> 
+      <span id="jacob_next_move"></span>
+    </div>
+    <div id="jacob_fen" style="float:right;min-width=100px"></div>
+  </div>
+  
+  `;
+
+  jacob_control.html(jacob_newHtml);
+
+  $("#jacob_hint").on("click", function () {
+    jacob_calculate();
+    $("#jacob_fen").html(JACOB_FEN + " w");
+  });
+
+  $("#jacob_fen").on("click", function () {        
+    navigator.clipboard.writeText(fen + " w");
+  });
+});
+
+function jacob_calculate() {
+  if (!JACOB_BOARD) {
+    return;
+  }
+
+  let currentFen = jacob_boardToFen();
+  if (JACOB_FEN == currentFen) {
+    return;
+  }
+
+  JACOB_FEN = currentFen;
+  $("#jacob_next_move").text("thinking");
+  jacobPos.fromFen(JACOB_FEN + " w");
+
+  let move = jacobSearch.searchMain(64, 2000);
+  let moveText = move2Iccs(move);
+
+  $("#jacob_next_move").text(moveText);
+}
+
+window.JACOB_BOARD = null;
+window.JACOB_FEN = null;
+let jacobPos = new Position();
+let jacobSearch = new Search(jacobPos, 16);

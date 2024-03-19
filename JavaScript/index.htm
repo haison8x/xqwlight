@@ -82,10 +82,18 @@ label {
       </div></span>
     </div>
     <div>
-      <input id="mypen" ></input>
+      <input id="myfen" ></input>
       <button onclick="loadFen()">
         Load Pen
       </button>
+      <button onclick="hint()">
+        Hint
+      </button>
+      <button onclick="getFen()">
+        Get Fen
+      </button>
+      
+      <span id="next_move"> </span>
     </div> 
     
     <script type="text/javascript">
@@ -171,9 +179,23 @@ function moveList_change() {
 }
     </script>
     <script type="text/javascript">
+      let jacobPos = new Position()
+      let jacobSearch = new Search(jacobPos, 16)
       function loadFen(){
-        var fen= document.getElementById("mypen").value
+        var fen= document.getElementById("myfen").value
+        jacobPos.fromFen(fen)
         board.restart(fen)
+      }
+      function hint(){
+        
+        let move = jacobSearch.searchMain(64, 100)
+        let moveText = move2Iccs(move)
+        document.getElementById('next_move').innerHTML = moveText
+      }
+      function getFen(){
+        
+        let fen =board.pos.toFen()
+        document.getElementById('next_move').innerHTML = fen
       }
     </script>
   </body>
