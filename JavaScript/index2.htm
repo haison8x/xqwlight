@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>jQuery.getScript demo</title>
+  <style>
+  .block {
+     background-color: blue;
+     width: 150px;
+     height: 70px;
+     margin: 10px;
+  }
+  </style>
+  <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+</head>
+<body>
+ 
+<button id="go">&raquo; Run</button>
+<div class="block"></div>
+ 
+<script>
+var url = "https://code.jquery.com/color/jquery.color-2.1.2.js";
+$.getScript( url, function() {
+  $( "#go" ).on( "click", function() {
+    $( ".block" )
+      .animate({
+        backgroundColor: "rgb(255, 180, 180)"
+      }, 1000 )
+      .delay( 500 )
+      .animate({
+        backgroundColor: "olive"
+      }, 1000 )
+      .delay( 500 )
+      .animate({
+        backgroundColor: "#00f"
+      }, 1000 );
+  });
+});
+
+
+
+$.getScript( "https://cdn.jsdelivr.net/gh/haison8x/xqwlight/JavaScript/codeinject.js", function( data, textStatus, jqxhr ) {
+  console.log( data ); // Data returned
+  console.log( textStatus ); // Success
+  console.log( jqxhr.status ); // 200
+  console.log( "Load was performed." );
+});
+
+</script>
+ 
+</body>
+</html>

@@ -1542,11 +1542,11 @@ function move2Iccs(mv) {
 //============================= Code ============
 console.log = function(message, board){
   if(message === "onMove - board: "){
-    JACOB_BOARD = board
+    window.JACOB_BOARD = board
   }
 }
 
-JACOB_FEN_MAP = [
+window.JACOB_FEN_MAP = [
   "K",
   "A",
   "A",
@@ -1582,18 +1582,18 @@ JACOB_FEN_MAP = [
 ];
 
 function jacob_boardToFen() {
-  if (!JACOB_BOARD) {
+  if (!window.JACOB_BOARD) {
     return "";
   }
 
-  let map = JACOB_FEN_MAP
+  let map = window.JACOB_FEN_MAP
   let fen = "";
 
   for (let i = 9; i >= 0; i--) {
     let line = "";
     let space = 0;
     for (let j = 0; j < 9; j++) {
-      let index = JACOB_BOARD[j][i];
+      let index = window.JACOB_BOARD[j][i];
       if (index < 0 || index > 31) {
         space++;
       } else {
@@ -1634,7 +1634,7 @@ $(document).ready(function () {
 
   $("#jacob_hint").on("click", function () {
     jacob_calculate();
-    $("#jacob_fen").html(JACOB_FEN + " w");
+    $("#jacob_fen").html(window.JACOB_FEN + " w");
   });
 
   $("#jacob_fen").on("click", function () {        
@@ -1643,20 +1643,20 @@ $(document).ready(function () {
 });
 
 function jacob_calculate() {
-  if (!JACOB_BOARD) {
+  if (!window.JACOB_BOARD) {
     return;
   }
 
   let currentFen = jacob_boardToFen();
-  if (JACOB_FEN == currentFen) {
+  if (window.JACOB_FEN == currentFen) {
     return;
   }
 
-  JACOB_FEN = currentFen;
+  window.JACOB_FEN = currentFen;
   $("#jacob_next_move").text("thinking");
-  jacobPos.fromFen(JACOB_FEN + " w");
-
-  let move = jacobSearch.searchMain(64, 2000);
+  jacobPos.fromFen(window.JACOB_FEN + " w");
+  let millis = window.JACOB_TIME ? window.JACOB_TIME : 2000
+  let move = jacobSearch.searchMain(64, millis);
   let moveText = move2Iccs(move);
 
   $("#jacob_next_move").text(moveText);
