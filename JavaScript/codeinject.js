@@ -1662,6 +1662,7 @@ function jacob_calculate() {
   $("#jacob_next_move").text(moveText);
 }
 
+window.JACOB_TIME = 2000
 window.JACOB_BOARD = null;
 window.JACOB_FEN = null;
 let jacobPos = new Position();
