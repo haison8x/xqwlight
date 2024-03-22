@@ -1521,7 +1521,7 @@ function insertHintHtml(){
   let jacob_control = $('.container-fluid:first')
   let jacob_newHtml = `
   <div style="height:100px">
-    <div style="float:left">      
+    <div style="float:left; padding-left: 200px">      
       <span id="jacob_hint" style="cursor:pointer;font-weight: bold; font-size: 24px">Hint</span> 
       <span id="jacob_next_move"></span>
     </div>
@@ -1540,9 +1540,10 @@ function insertHintHtml(){
     navigator.clipboard.writeText(fen + ' w')
   })
 }
+
 function insertFromToHtml() {
-  let fromDivHtml = `<div id="jacob_from" style="width: 20px; height: 20px;background-color: red!important; position: absolute; left: 0px;top: 0px;"></div> `
-  let toDivHtml = `<div id="jacob_to" style="width: 20px; height: 20px;background-color: red!important; position: absolute; left: 0px;top: 0px;"></div> `
+  let fromDivHtml = `<div id="jacob_from" style="width: 10px; height: 10px; background-color: red!important; position: absolute; left: 0px;top: 0px;"></div> `
+  let toDivHtml = `<div id="jacob_to" style="width: 10px; height: 10px; background-color: blue!important; position: absolute; left: 0px;top: 0px;"></div> `
 
   $('#Cocos2dGameContainer').append(fromDivHtml)
   $('#Cocos2dGameContainer').append(toDivHtml)
@@ -1557,13 +1558,12 @@ function showFromTo(mv) {
 
   let x2 = FILE_X(sqDst) - FILE_LEFT
   let y2 = RANK_Y(sqDst) - RANK_TOP
-  $("#jacob_hint").html(`${x1}-${y1}-${x2}-${y2}`)
-  
-  x1 = 243 + x1 * 57
-  y1 = 43 + y1 * 57
+    
+  x1 = 248 + x1 * 57
+  y1 = 35 + y1 * 57
 
-  x2 = 241 + x2 * 57
-  y2 = 43 + y2 * 57
+  x2 = 248 + x2 * 57
+  y2 = 35 + y2 * 57
 
   let textFrom = CHR(ASC('A') + FILE_X(sqSrc) - FILE_LEFT) + CHR(ASC('9') - RANK_Y(sqSrc) + RANK_TOP)
   let textTo = CHR(ASC('A') + FILE_X(sqDst) - FILE_LEFT) + CHR(ASC('9') - RANK_Y(sqDst) + RANK_TOP)
