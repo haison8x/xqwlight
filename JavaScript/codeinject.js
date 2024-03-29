@@ -1438,6 +1438,10 @@ function move2Iccs(mv) {
 console.log = function (message, board) {
   if (message === 'onMove - board: ') {
     window.JACOB_BOARD = board
+
+    jacob_calculate()
+    let engineColor = $('#jacob_engine_color').val()
+    $('#jacob_engine_color').val(engineColor == '0' ? '1' : '0')
   }
 }
 
@@ -1515,29 +1519,48 @@ function jacob_boardToFen() {
 $(document).ready(function () {
   insertHintHtml()
   insertFromToHtml()
+  hideAds();
 })
 
-function insertHintHtml(){
+function insertHintHtml() {
   let jacob_control = $('.container-fluid:first')
   let jacob_newHtml = `
   <div style="height:100px">
-    <div style="float:left; padding-left: 200px">      
-      <span id="jacob_hint" style="cursor:pointer;font-weight: bold; font-size: 24px">Hint</span> 
-      <span id="jacob_next_move"></span>
+    <div style="float:left; padding-left: 200px; width: 300px">      
+      <span style="font-weight: bold;">Auto Hint</span>
+      <input id="jacob_autohint" type="checkbox" checked="true"/>
+    </div>    
+    <div style="float:left;min-width: 80px">
+      <span>Tới lượt</span>
+      <select id="jacob_engine_color">
+        <option value="0" selected="selected">Người ta</option>
+        <option value="1">Tôi</option>        
+      </select>
     </div>
-    <div id="jacob_fen" style="float:right;min-width=100px"></div>
+    <div style="float:left;min-width: 80px">
+      <span>Level</span>
+      <select id="jacob_level">
+        <option value="1" selected="selected">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+      </select>
+    </div>
   </div>
   
   `
   jacob_control.html(jacob_newHtml)
 
-  $('#jacob_hint').on('click', function () {
-    jacob_calculate()
-    $('#jacob_fen').html(JACOB_FEN + ' w')
-  })
-
-  $('#jacob_fen').on('click', function () {
-    navigator.clipboard.writeText(fen + ' w')
+  $('#jacob_level').on('change', function () {
+    let level = $('#jacob_level').val()
+    level = parseInt(level)
+    window.JACOB_TIME = level * 1000
   })
 }
 
@@ -1549,24 +1572,25 @@ function insertFromToHtml() {
   $('#Cocos2dGameContainer').append(toDivHtml)
 }
 
+function hideAds(){
+  $(".adsbygoogle").remove()
+}
+
 function showFromTo(mv) {
   let sqSrc = SRC(mv)
   let sqDst = DST(mv)
 
   let x1 = FILE_X(sqSrc) - FILE_LEFT
-  let y1 = RANK_Y(sqSrc) - RANK_TOP 
+  let y1 = RANK_Y(sqSrc) - RANK_TOP
 
   let x2 = FILE_X(sqDst) - FILE_LEFT
   let y2 = RANK_Y(sqDst) - RANK_TOP
-    
+
   x1 = 248 + x1 * 57
   y1 = 35 + y1 * 57
 
   x2 = 248 + x2 * 57
   y2 = 35 + y2 * 57
-
-  let textFrom = CHR(ASC('A') + FILE_X(sqSrc) - FILE_LEFT) + CHR(ASC('9') - RANK_Y(sqSrc) + RANK_TOP)
-  let textTo = CHR(ASC('A') + FILE_X(sqDst) - FILE_LEFT) + CHR(ASC('9') - RANK_Y(sqDst) + RANK_TOP)
 
   $('#jacob_from').css('left', `${x1}px`)
   $('#jacob_from').css('top', `${y1}px`)
@@ -1574,9 +1598,15 @@ function showFromTo(mv) {
   $('#jacob_to').css('top', `${y2}px`)
 }
 
-
 function jacob_calculate() {
   if (!window.JACOB_BOARD) {
+    return
+  }
+  if (!$('#jacob_autohint').is(':checked')) {
+    return
+  }
+
+  if ('0' != $('#jacob_engine_color').val()) {
     return
   }
 
@@ -1586,13 +1616,11 @@ function jacob_calculate() {
   }
 
   window.JACOB_FEN = currentFen
-  $('#jacob_next_move').text('thinking')
   jacobPos.fromFen(window.JACOB_FEN + ' w')
   let millis = window.JACOB_TIME ? window.JACOB_TIME : 1000
   let move = jacobSearch.searchMain(64, millis)
   let moveText = move2Iccs(move)
-
-  $('#jacob_next_move').text(moveText)
+  
   showFromTo(move)
 }
 
